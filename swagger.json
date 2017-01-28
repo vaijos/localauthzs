@@ -1,0 +1,296 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Group manager API\n",
+        "version": "1.0.0",
+        "title": "Group Manager API",
+        "termsOfService": "http://www.dowjones.com/tos.html",
+        "contact": {
+            "name": "ted.krysa@dowjones.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.dowjones.com/licenses/LICENSE.html"
+        }
+    },
+    "host": "localhost:4567",
+    "basePath": "/",
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/group": {
+            "post": {
+                "tags": [
+                    "group"
+                ],
+                "summary": "Add a new group to the admin's account",
+                "description": "",
+                "operationId": "addGroup",
+                "consumes": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Group metadata",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/GroupMetadata"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Group successfully added",
+                        "schema": {
+                            "$ref": "#/definitions/AddGroupResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/ErrorArray"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "group"
+                ],
+                "summary": "Update an existing group",
+                "description": "",
+                "operationId": "updateGroup",
+                "consumes": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Group to be modified",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/AddGroupResponse"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Group successfully added",
+                        "schema": {
+                            "$ref": "#/definitions/AddGroupResponse"
+                        }
+                    },
+                    "405": {
+                        "description": "Validation exception"
+                    }
+                }
+            }
+        },
+        "/group/{groupId}/descendants": {
+            "get": {
+                "tags": [
+                    "group"
+                ],
+                "summary": "Get all group node and all descendants",
+                "description": "Returns results as a tree structure",
+                "operationId": "getGroupTree",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "description": "Group ID",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/DecendantTuple"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    },
+                    "404": {
+                        "description": "Group not found"
+                    }
+                }
+            }
+        },
+        "/group/{groupId}": {
+            "get": {
+                "tags": [
+                    "group"
+                ],
+                "summary": "Get group description",
+                "description": "Returns group metadata",
+                "operationId": "getGroupDescription",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "description": "Group ID",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    },
+                    "404": {
+                        "description": "Group not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "group"
+                ],
+                "summary": "Get all group node and all descendants",
+                "description": "Returns results as a tree structure",
+                "operationId": "deleteGroup",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "groupId",
+                        "description": "Group ID",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID supplied"
+                    },
+                    "404": {
+                        "description": "Group not found"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "CommonErrorObject": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            }
+        },
+        "ErrorArray": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/CommonErrorObject"
+            }
+        },
+        "GroupMetadata": {
+            "type": "object",
+            "properties": {
+                "groupType": {
+                    "type": "boolean",
+                    "description": "Admin T/F"
+                },
+                "accountId": {
+                    "type": "string",
+                    "description": "Account that will own this group"
+                },
+                "groupName": {
+                    "type": "string",
+                    "description": "unique group name"
+                },
+                "parentGroupId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "parent group node"
+                },
+                "adminGroupId": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "unique groupId"
+                }
+            }
+        },
+        "AddGroupResponse": {
+            "type": "object",
+            "properties": {
+                "groupId": {
+                    "type": "string",
+                    "description": "unique group id"
+                },
+                "groupMetadata": {
+                    "$ref": "#/definitions/GroupMetadata"
+                }
+            }
+        },
+        "DecendantTuple": {
+            "type": "object",
+            "properties": {
+                "pgid": {
+                    "type": "string",
+                    "description": "Parent group ID"
+                },
+                "gid": {
+                    "type": "string",
+                    "description": "Group Id"
+                },
+                "lvl": {
+                    "type": "string",
+                    "description": "Level"
+                }
+            }
+        }
+    }
+}
